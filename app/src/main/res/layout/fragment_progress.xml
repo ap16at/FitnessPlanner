@@ -73,6 +73,7 @@
         android:src="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

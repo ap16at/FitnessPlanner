@@ -10,41 +10,55 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="TODO"
-        tools:layout_editor_absoluteX="30dp"
-        tools:layout_editor_absoluteY="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@string/profileName"
+        android:id="@id/profileName"
         android:layout_width="144dp"
         android:layout_height="38dp"
-        android:text="Name"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/name"
         android:textColor="#020202"
         android:textSize="24sp"
-        tools:layout_editor_absoluteX="214dp"
-        tools:layout_editor_absoluteY="32dp" />
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/currentField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current:"
-        tools:layout_editor_absoluteX="213dp"
-        tools:layout_editor_absoluteY="101dp" />
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/current"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
     <TextView
         android:id="@+id/goalsField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Goals:"
-        tools:layout_editor_absoluteX="213dp"
-        tools:layout_editor_absoluteY="127dp" />
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:text="@string/goals"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/currentField" />
 
     <ListView
         android:layout_width="411dp"
         android:layout_height="262dp"
         android:entries="@array/Settings"
-        tools:layout_editor_absoluteY="232dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
