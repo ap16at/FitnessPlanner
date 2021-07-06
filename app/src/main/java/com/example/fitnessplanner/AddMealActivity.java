@@ -2,6 +2,8 @@ package com.example.fitnessplanner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fitnessplanner.adapters.MealsAdapter;
 import com.example.fitnessplanner.models.Meal;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class AddMealActivity extends AppCompatActivity {
@@ -61,6 +65,7 @@ public class AddMealActivity extends AppCompatActivity {
     Button add_button;
 
     RecyclerView meals;
+    private ArrayList<Meal> mealItems;
     ColorStateList defaultColor;
 
     FirebaseDatabase database;
@@ -255,6 +260,53 @@ public class AddMealActivity extends AppCompatActivity {
         mealRef = database.getReference("Meals");
 
         update_progress_bars();
+
+        mealItems = new ArrayList<>();
+
+        mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for(DataSnapshot ds : snapshot.getChildren()){
+
+                    Map<String, Object>map = (Map<String,Object>) ds.getValue();
+                    Object descrip = map.get("description");
+                    Object size = map.get("servingSize");
+                    Object calories = map.get("totalCalories");
+                    Object protein = map.get("protein");
+                    Object carbs = map.get("carbs");
+                    Object fat = map.get("fat");
+
+                    String dValue = String.valueOf(descrip);
+                    int sValue = Integer.parseInt(String.valueOf(size));
+                    int tValue = Integer.parseInt(String.valueOf(calories));
+                    int pValue = Integer.parseInt(String.valueOf(protein));
+                    int cValue = Integer.parseInt(String.valueOf(carbs));
+                    int fValue = Integer.parseInt(String.valueOf(fat));
+
+                    System.out.println("des: " + dValue + " CALORIES: " + cValue);
+
+                    mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue));
+                }
+
+                setRecyclerView(findViewById(android.R.id.content));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void setRecyclerView(View v){
+
+        meals = v.findViewById(R.id.rv_meals);
+        meals.setLayoutManager(new LinearLayoutManager(this));
+        MealsAdapter mealsAdapter = new MealsAdapter(this, mealItems);
+        meals.setAdapter(mealsAdapter);
+        meals.setItemAnimator(new DefaultItemAnimator());
 
     }
 

@@ -41,7 +41,6 @@ public class HomeFragment extends Fragment {
     private Button add_a_meal;
     private RecyclerView meals_display;
     private ArrayList<Meal> mealItems;
-    private ArrayList<Meal> tempList;
 
     FirebaseDatabase database;
     DatabaseReference mealRef;
@@ -118,37 +117,30 @@ public class HomeFragment extends Fragment {
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long count = snapshot.getChildrenCount();
 
-                ArrayList<Meal> tempList = new ArrayList<>();
+                for(DataSnapshot ds : snapshot.getChildren()){
 
-                for(int i = 1; i <= (int)count; i++){
-                    mealRef.child(String.valueOf(i)).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Map<String, Object>map = (Map<String,Object>) ds.getValue();
+                    Object descrip = map.get("description");
+                    Object size = map.get("servingSize");
+                    Object calories = map.get("totalCalories");
+                    Object protein = map.get("protein");
+                    Object carbs = map.get("carbs");
+                    Object fat = map.get("fat");
 
-                            String description = snapshot.child("description").getValue(String.class);
-                            int size = snapshot.child("servingSize").getValue(Integer.class);
-                            int calories = snapshot.child("totalCalories").getValue(Integer.class);
-                            int protein = snapshot.child("protein").getValue(Integer.class);
-                            int carbs = snapshot.child("carbs").getValue(Integer.class);
-                            int fat = snapshot.child("fat").getValue(Integer.class);
+                    String dValue = String.valueOf(descrip);
+                    int sValue = Integer.parseInt(String.valueOf(size));
+                    int tValue = Integer.parseInt(String.valueOf(calories));
+                    int pValue = Integer.parseInt(String.valueOf(protein));
+                    int cValue = Integer.parseInt(String.valueOf(carbs));
+                    int fValue = Integer.parseInt(String.valueOf(fat));
 
-                            System.out.println("des: " + description + " calories: " + calories);
+                    System.out.println("des: " + dValue + " calories: " + cValue);
 
-                            mealItems.add(new Meal(description, size, calories, protein, carbs, fat));
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue));
                 }
 
                 setRecyclerView(view);
-
             }
 
             @Override
