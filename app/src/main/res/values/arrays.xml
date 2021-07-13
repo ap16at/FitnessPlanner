@@ -9,4 +9,9 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="units">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </string-array>
 </resources>

@@ -2,11 +2,18 @@ package com.example.fitnessplanner;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jjoe64.graphview.GraphView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,10 +22,17 @@ import android.view.ViewGroup;
  */
 public class ProgressFragment extends Fragment {
 
+
+    FloatingActionButton addButton;
+    RecyclerView weightLog;
+    GraphView progressGraph;
+    ProgressBar progressBar;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -56,9 +70,20 @@ public class ProgressFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_progress, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_progress, container, false);
+        addButton = fragment.findViewById(R.id.floatingActionButton);
+        weightLog = fragment.findViewById(R.id.recyclerView4);
+        progressGraph = fragment.findViewById(R.id.progressGraph);
+        progressBar = fragment.findViewById(R.id.progressBar);
+
+        return fragment;
     }
 }
