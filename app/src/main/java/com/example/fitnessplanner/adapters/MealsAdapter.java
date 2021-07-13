@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MealsAdapter extends RecyclerView.Adapter<MealsAdapter.ViewHolder>{
+
     Context context;
     private ArrayList<Meal> mealItems;
 
