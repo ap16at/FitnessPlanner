@@ -119,4 +119,5 @@ public class WorkoutFragment extends Fragment {
     private void  setWorkoutList(){
 
     }
+
 }
