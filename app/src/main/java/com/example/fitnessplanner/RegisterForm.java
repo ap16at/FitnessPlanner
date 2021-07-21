@@ -35,6 +35,7 @@ public class RegisterForm extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         LoginForm login = new LoginForm();
+                        login.setCancelable(false);
                         login.show(getActivity().getSupportFragmentManager(),"login dialog");
                     }
                 })

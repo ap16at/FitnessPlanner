@@ -14,4 +14,9 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
+    <string-array name="graph">
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
 </resources>
