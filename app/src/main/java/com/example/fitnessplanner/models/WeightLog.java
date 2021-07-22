@@ -59,6 +59,6 @@ public class WeightLog {
 
     public String getLog()
     {
-        return getMonth() + " " + getDay() + ", " + getYear() + ": " + getWeight();
+        return getMonth() + " " + getDay() + ", " + getYear() + ": " + getWeight() + " " + getUnits();
     }
 }

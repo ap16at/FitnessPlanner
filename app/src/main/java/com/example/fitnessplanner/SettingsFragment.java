@@ -3,6 +3,7 @@ package com.example.fitnessplanner;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -41,7 +42,8 @@ public class SettingsFragment extends Fragment {
                     //change name, change profile pic
                     break;
                 case 1:     //notification
-                    //change notification settings
+                    NotificationDialog notificationDialog = new NotificationDialog();
+                    notificationDialog.show(getActivity().getSupportFragmentManager(),"notifications");
                     break;
                 case 2:     //goals
                     //change goal

@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.fitnessplanner.adapters.WeightLogAdapter;
@@ -40,6 +42,8 @@ public class ProgressFragment extends Fragment {
     RecyclerView weightLog;
     GraphView progressGraph;
     WeightLogAdapter weightLogAdapter;
+    Spinner graphRange;
+    ArrayList<WeightLog> weights;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -95,25 +99,27 @@ public class ProgressFragment extends Fragment {
         addButton = fragment.findViewById(R.id.floatingActionButton);
         weightLog = fragment.findViewById(R.id.recents);
         progressGraph = fragment.findViewById(R.id.progressGraph);
+        graphRange = fragment.findViewById(R.id.range);
 
+        //graphRange.setOnItemClickListener(rangeListener);
         addButton.setOnClickListener(fabListener);
 
         weightLog.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ArrayList<WeightLog> weights = new ArrayList<>();
+
+
+        weights = new ArrayList<>();
 
         //Tests
         Date date = new Date(2021, 0,1);
-        weights.add(new WeightLog(date, 150.0, "lbs"));
+        weights.add(new WeightLog(date, 150.00, "lbs"));
         Date date1 = new Date(2021,0,2);
-        weights.add(new WeightLog(date1, 151.0, "lbs"));
+        weights.add(new WeightLog(date1, 151.00, "lbs"));
         Date date2 = new Date(2021,0,3);
-        weights.add(new WeightLog(date2, 152.0, "lbs"));
+        weights.add(new WeightLog(date2, 152.00, "lbs"));
         Date date3 = new Date(2021,0,5);
-        weights.add(new WeightLog(date3, 153.0, "lbs"));
+        weights.add(new WeightLog(date3, 153.00, "lbs"));
         //Test Dates End
-
-        Toast.makeText(getContext(), date.toString(),Toast.LENGTH_LONG).show();
 
         weightLogAdapter = new WeightLogAdapter(getContext(),weights);
 
@@ -147,18 +153,15 @@ public class ProgressFragment extends Fragment {
             }
         });
 
+
         return fragment;
     }
 
-    private void setProgressGraph(View v)
+    private void displayGraph(int range)
     {
 
     }
 
-    private void setLog(View v)
-    {
-        //retrieve last 5 data
-    }
 
     View.OnClickListener fabListener = new View.OnClickListener() {
 
@@ -166,6 +169,22 @@ public class ProgressFragment extends Fragment {
         public void onClick(View v) {
             AddWeight addWeight = new AddWeight();
             addWeight.show(getActivity().getSupportFragmentManager(), "add weight");
+        }
+    };
+
+    AdapterView.OnItemClickListener rangeListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch(position)
+            {
+                case 0:
+
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+            }
         }
     };
 
