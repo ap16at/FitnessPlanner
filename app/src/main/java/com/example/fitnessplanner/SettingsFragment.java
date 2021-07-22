@@ -31,6 +31,8 @@ public class SettingsFragment extends Fragment {
     TextView nameField;
     ListView settingList;
     ImageView image;
+    SharedPreferences mPref;
+    SharedPreferences.Editor editor;
 
     AdapterView.OnItemClickListener listListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -46,6 +48,27 @@ public class SettingsFragment extends Fragment {
                     notificationDialog.show(getActivity().getSupportFragmentManager(),"notifications");
                     break;
                 case 2:     //goals
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Change Goal")
+                            .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
+                            .setSingleChoiceItems(R.array.goals, 1, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getContext(),which+" selected", Toast.LENGTH_LONG).show();
+                                }
+                            }).create().show();
                     //change goal
                     break;
                 case 3:     //units
@@ -58,15 +81,16 @@ public class SettingsFragment extends Fragment {
                             .setSingleChoiceItems(R.array.units, 0, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
+                                            editor.putString("units", str_array[which]);
+                                            editor.commit();
                                             Toast.makeText(getContext(),  str_array[which] + " units selected", Toast.LENGTH_LONG).show();
                                             //store in the app
                                         }
                                     }).create().show();
                                     //change unit
                     break;
-                case 4:     //help
-                    //help section to help users navigate through the app
+                case 4:     //About Section
+                    //information about the app and developer
                     break;
             }
         }
@@ -117,7 +141,8 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment =  inflater.inflate(R.layout.fragment_settings, container, false);
-        SharedPreferences mPref = getContext().getSharedPreferences("prefs",Context.MODE_PRIVATE);
+        mPref = getContext().getSharedPreferences("prefs",Context.MODE_PRIVATE);
+        editor = mPref.edit();
 
         nameField = fragment.findViewById(R.id.profileName);
         settingList = fragment.findViewById(R.id.SettingsList);

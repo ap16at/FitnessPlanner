@@ -25,4 +25,9 @@
         <item>Dinner</item>
         <item>Weight Log</item>
     </string-array>
+    <string-array name="goals">
+        <item>Lose Weight</item>
+        <item>Gain Weight</item>
+        <item>Maintain Weight</item>
+    </string-array>
 </resources>

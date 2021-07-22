@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements LoginForm.LoginLi
         boolean mealReminders = mPref.getBoolean("reminders", true);
         int breakfastH = mPref.getInt("breakfasthour", 9);
         int breakfastM = mPref.getInt("breakfastminute", 0);
-        int lunchH = mPref.getInt("lunch", 13);
+        int lunchH = mPref.getInt("lunchhour", 13);
         int lunchM = mPref.getInt("lunchminute", 0);
-        int dinnerH = mPref.getInt("dinner", 17);
+        int dinnerH = mPref.getInt("dinnerhour", 17);
         int dinnerM = mPref.getInt("dinnerminute", 0);
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);

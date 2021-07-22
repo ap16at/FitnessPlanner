@@ -12,7 +12,7 @@
         <item>Notifications</item>
         <item>Goals</item>
         <item>Units</item>
-        <item>Help</item>
+        <item>About</item>
     </string-array>
     <string name="profileView">profileImage</string>
     <string name="currentField">currentField</string>
@@ -37,7 +37,7 @@
     <string name="todo">TODO</string>
     <string name="name">Name</string>
     <string name="current">Current:</string>
-    <string name="goals">Goals:</string>
+    <string name="goals">Goal:</string>
     <string name="meal_description">Meal Description:</string>
     <string name="description">Description</string>
     <string name="serving_size">Serving Size:</string>
