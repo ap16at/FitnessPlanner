@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements LoginForm.LoginLi
     private void promptFirstTime(){
         LoginForm login = new LoginForm();
         login.setCancelable(false);
+
+
+
         login.show(getSupportFragmentManager(),"login");
     }
 
