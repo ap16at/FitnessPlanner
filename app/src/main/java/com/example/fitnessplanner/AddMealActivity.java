@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import static java.security.AccessController.getContext;
 
 public class AddMealActivity extends AppCompatActivity {
 
@@ -69,6 +72,7 @@ public class AddMealActivity extends AppCompatActivity {
     ColorStateList defaultColor;
 
     FirebaseDatabase database;
+    DatabaseReference userRef;
     DatabaseReference mealRef;
 
     // sets textView colors to black
@@ -256,8 +260,12 @@ public class AddMealActivity extends AppCompatActivity {
         cancel_button.setOnClickListener(cancelListener);
         add_button.setOnClickListener(addListener);
 
+        SharedPreferences mPref = getSharedPreferences("prefs", MODE_PRIVATE);
+        String userName = mPref.getString("user", "pabloH");
+
         database = FirebaseDatabase.getInstance();
-        mealRef = database.getReference("Meals");
+        userRef = database.getReference(userName);
+        mealRef = userRef.child("Meals");
 
         update_progress_bars();
 

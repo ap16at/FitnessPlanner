@@ -1,6 +1,7 @@
 package com.example.fitnessplanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class HomeFragment extends Fragment {
 
     //TODO: Progress bar stuff
@@ -43,8 +46,8 @@ public class HomeFragment extends Fragment {
     private ArrayList<Meal> mealItems;
 
     FirebaseDatabase database;
+    DatabaseReference userRef;
     DatabaseReference mealRef;
-    DatabaseReference specificMealRef;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -108,8 +111,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        String userName = mPref.getString("user", "pabloH");
+
         database = FirebaseDatabase.getInstance();
-        mealRef = database.getReference("Meals");
+        userRef = database.getReference(userName);
+        mealRef = userRef.child("Meals");
         calorie_bar_update();
 
         mealItems = new ArrayList<>();
