@@ -275,7 +275,7 @@ public class AddMealActivity extends AppCompatActivity {
         add_button.setOnClickListener(addListener);
 
         SharedPreferences mPref = getSharedPreferences("prefs", MODE_PRIVATE);
-        String userName = mPref.getString("user", "pabloH");
+        String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference(userName);

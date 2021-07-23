@@ -126,7 +126,7 @@ public class HomeFragment extends Fragment {
         });
 
         SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
-        String userName = mPref.getString("user", "pabloH");
+        String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference(userName);

@@ -13,11 +13,11 @@ public class User {
         this.goal = goal;
     }
 
-    public String getfullName() {
+    public String getFullName() {
         return fullName;
     }
 
-    public void setFullname(String fullName) {
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
