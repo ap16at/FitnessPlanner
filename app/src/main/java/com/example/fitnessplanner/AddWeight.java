@@ -50,6 +50,8 @@ public class AddWeight extends DialogFragment{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        //TODO: FIREBASE LOGIC FOR WEIGHT_LOGS
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
