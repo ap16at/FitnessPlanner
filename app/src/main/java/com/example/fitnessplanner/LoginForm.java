@@ -107,14 +107,18 @@ public class LoginForm extends DialogFragment {
                             DataSnapshot user = snapshot.child(getUser());
                             Map<String,Object> values = (HashMap<String,Object>) user.getValue();
                             dbPassword = values.get("password").toString();
-                            if(dbPassword.equals(getPassword())) {
+                            if(dbPassword.equals(getPassword().trim())) {
+                                Toast.makeText(getContext(),"Successful Login", Toast.LENGTH_LONG).show();
                                 SharedPreferences pref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString("user", getUser());
                                 editor.putBoolean("signin", false);
+                                editor.putString("fullname",values.get("fullName").toString());
                                 editor.commit();
                                 dismiss();
                             }
+                            else
+                                Toast.makeText(getContext(), "Login Attemp Failed", Toast.LENGTH_LONG).show();
                         }
                     }
 

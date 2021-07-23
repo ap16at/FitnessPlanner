@@ -42,6 +42,8 @@ public class SettingsFragment extends Fragment {
 
                 case 0:     //profile
                     //change name, change profile pic
+                    ProfileSetting profileSetting = new ProfileSetting();
+                    profileSetting.show(getActivity().getSupportFragmentManager(),"profileSetting");
                     break;
                 case 1:     //notification
                     NotificationDialog notificationDialog = new NotificationDialog();
