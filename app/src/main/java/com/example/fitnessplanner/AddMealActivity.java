@@ -1,17 +1,21 @@
 package com.example.fitnessplanner;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,8 +33,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
+
+import static java.security.AccessController.getContext;
 
 public class AddMealActivity extends AppCompatActivity {
 
@@ -69,6 +78,7 @@ public class AddMealActivity extends AppCompatActivity {
     ColorStateList defaultColor;
 
     FirebaseDatabase database;
+    DatabaseReference userRef;
     DatabaseReference mealRef;
 
     // sets textView colors to black
@@ -185,13 +195,21 @@ public class AddMealActivity extends AppCompatActivity {
                 int finalCarbs = carbs;
                 int finalFat = fat;
                 mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         long count = snapshot.getChildrenCount();
                         String meal_num = String.valueOf(++count);
 
+                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                        LocalDateTime now = LocalDateTime.now();
+                        System.out.println(dtf.format(now));
+                        String date = dtf.format(now);
+                        String TAG = "DATE";
+                        Log.i(TAG, date);
+
                         setColorDefault();
-                        Meal newMeal = new Meal(des, finalSize, finalCal, finalProtein, finalCarbs, finalFat);
+                        Meal newMeal = new Meal(des, finalSize, finalCal, finalProtein, finalCarbs, finalFat, date);
                         mealRef.child(meal_num).setValue(newMeal);
 
                         View.OnClickListener snackActionListener = new View.OnClickListener(){
@@ -256,14 +274,19 @@ public class AddMealActivity extends AppCompatActivity {
         cancel_button.setOnClickListener(cancelListener);
         add_button.setOnClickListener(addListener);
 
+        SharedPreferences mPref = getSharedPreferences("prefs", MODE_PRIVATE);
+        String userName = mPref.getString("user", "pabloH");
+
         database = FirebaseDatabase.getInstance();
-        mealRef = database.getReference("Meals");
+        userRef = database.getReference(userName);
+        mealRef = userRef.child("Meals");
 
         update_progress_bars();
 
         mealItems = new ArrayList<>();
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -276,6 +299,7 @@ public class AddMealActivity extends AppCompatActivity {
                     Object protein = map.get("protein");
                     Object carbs = map.get("carbs");
                     Object fat = map.get("fat");
+                    Object date = map.get("date");
 
                     String dValue = String.valueOf(descrip);
                     int sValue = Integer.parseInt(String.valueOf(size));
@@ -283,10 +307,18 @@ public class AddMealActivity extends AppCompatActivity {
                     int pValue = Integer.parseInt(String.valueOf(protein));
                     int cValue = Integer.parseInt(String.valueOf(carbs));
                     int fValue = Integer.parseInt(String.valueOf(fat));
+                    String ddValue = String.valueOf(date);
 
                     System.out.println("des: " + dValue + " CALORIES: " + cValue);
 
-                    mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue));
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(ddValue.equals(dateCurr)){
+                        mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue, ddValue));
+                    }
+
                 }
 
                 setRecyclerView(findViewById(android.R.id.content));
@@ -320,6 +352,7 @@ public class AddMealActivity extends AppCompatActivity {
         int fatTemp = 61;
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -330,18 +363,30 @@ public class AddMealActivity extends AppCompatActivity {
                 for(DataSnapshot ds : snapshot.getChildren()){
 
                     Map<String, Object>map = (Map<String,Object>) ds.getValue();
-                    Object calories = map.get("totalCalories");
-                    Object protein = map.get("protein");
-                    Object carbs = map.get("carbs");
-                    Object fat = map.get("fat");
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    int pValue = Integer.parseInt(String.valueOf(protein));
-                    int cValue = Integer.parseInt(String.valueOf(carbs));
-                    int fValue = Integer.parseInt(String.valueOf(fat));
-                    total_sum += tValue;
-                    protein_sum += pValue;
-                    carb_sum += cValue;
-                    fat_sum += fValue;
+
+                    Object date = map.get("date");
+                    String dateStr = String.valueOf(date);
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(dateStr.equals(dateCurr)){
+
+                        Object calories = map.get("totalCalories");
+                        Object protein = map.get("protein");
+                        Object carbs = map.get("carbs");
+                        Object fat = map.get("fat");
+                        int tValue = Integer.parseInt(String.valueOf(calories));
+                        int pValue = Integer.parseInt(String.valueOf(protein));
+                        int cValue = Integer.parseInt(String.valueOf(carbs));
+                        int fValue = Integer.parseInt(String.valueOf(fat));
+                        total_sum += tValue;
+                        protein_sum += pValue;
+                        carb_sum += cValue;
+                        fat_sum += fValue;
+
+                    }
 
                 }
                 total_progress = (total_sum*100)/totCalTemp;
