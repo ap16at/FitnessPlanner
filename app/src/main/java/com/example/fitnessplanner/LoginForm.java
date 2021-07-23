@@ -35,7 +35,6 @@ public class LoginForm extends DialogFragment {
     EditText password;
     Button login;
 
-    boolean success;
     private String user_name;
     private String pass_word;
 
@@ -60,7 +59,7 @@ public class LoginForm extends DialogFragment {
         mDatabase = database.getReference();
 
         SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPref.edit();
+
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -108,8 +107,14 @@ public class LoginForm extends DialogFragment {
                             DataSnapshot user = snapshot.child(getUser());
                             Map<String,Object> values = (HashMap<String,Object>) user.getValue();
                             dbPassword = values.get("password").toString();
-                            if(dbPassword.equals(getPassword()))
+                            if(dbPassword.equals(getPassword())) {
+                                SharedPreferences pref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("user", getUser());
+                                editor.putBoolean("signin", false);
+                                editor.commit();
                                 dismiss();
+                            }
                         }
                     }
 
@@ -132,15 +137,6 @@ public class LoginForm extends DialogFragment {
         void getUser(String user,String pass);
     }
 
-    private void setLoginSuccess(boolean success)
-    {
-        this.success = success;
-    }
-
-    private boolean getLoginSuccess()
-    {
-        return success;
-    }
 
     private void setUser(String user_name)
     {

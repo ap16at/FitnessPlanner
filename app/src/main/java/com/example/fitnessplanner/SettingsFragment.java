@@ -154,7 +154,7 @@ public class SettingsFragment extends Fragment {
         image.getLayoutParams().height = 250;
 
 
-        nameField.setText(mPref.getString("name", "N/A"));
+        nameField.setText(mPref.getString("fullname", "N/A"));
         settingList.setOnItemClickListener(listListener);
         return fragment;
     }
