@@ -2,15 +2,18 @@ package com.example.fitnessplanner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -95,12 +100,21 @@ public class HomeFragment extends Fragment {
         });
 
         button_increase.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 if(water_progress <= 90){
                     water_progress += 10;
                     water_bar_update();
                 }
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                LocalDateTime now = LocalDateTime.now();
+                System.out.println(dtf.format(now));
+                String date = dtf.format(now);
+                String TAG = "DATE";
+                Log.i(TAG, date);
+
             }
         });
 
@@ -122,6 +136,7 @@ public class HomeFragment extends Fragment {
         mealItems = new ArrayList<>();
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -134,6 +149,7 @@ public class HomeFragment extends Fragment {
                     Object protein = map.get("protein");
                     Object carbs = map.get("carbs");
                     Object fat = map.get("fat");
+                    Object date = map.get("date");
 
                     String dValue = String.valueOf(descrip);
                     int sValue = Integer.parseInt(String.valueOf(size));
@@ -141,10 +157,16 @@ public class HomeFragment extends Fragment {
                     int pValue = Integer.parseInt(String.valueOf(protein));
                     int cValue = Integer.parseInt(String.valueOf(carbs));
                     int fValue = Integer.parseInt(String.valueOf(fat));
+                    String ddValue = String.valueOf(date);
 
-                    System.out.println("des: " + dValue + " calories: " + cValue);
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
 
-                    mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue));
+                    if(dateCurr.equals(ddValue)){
+                        mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue, ddValue));
+                    }
+
                 }
 
                 setRecyclerView(view);
