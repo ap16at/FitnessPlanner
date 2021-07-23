@@ -208,6 +208,7 @@ public class HomeFragment extends Fragment {
         int totCalTemp = 2200;
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -215,9 +216,19 @@ public class HomeFragment extends Fragment {
                 for(DataSnapshot ds : snapshot.getChildren()){
 
                     Map<String, Object> map = (Map<String,Object>) ds.getValue();
-                    Object calories = map.get("totalCalories");
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    total_sum += tValue;
+
+                    Object date = map.get("date");
+                    String dateStr = String.valueOf(date);
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(dateStr.equals(dateCurr)){
+                        Object calories = map.get("totalCalories");
+                        int tValue = Integer.parseInt(String.valueOf(calories));
+                        total_sum += tValue;
+                    }
 
                 }
                 calorie_progress = (total_sum*100)/totCalTemp;

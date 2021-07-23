@@ -352,6 +352,7 @@ public class AddMealActivity extends AppCompatActivity {
         int fatTemp = 61;
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -362,18 +363,30 @@ public class AddMealActivity extends AppCompatActivity {
                 for(DataSnapshot ds : snapshot.getChildren()){
 
                     Map<String, Object>map = (Map<String,Object>) ds.getValue();
-                    Object calories = map.get("totalCalories");
-                    Object protein = map.get("protein");
-                    Object carbs = map.get("carbs");
-                    Object fat = map.get("fat");
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    int pValue = Integer.parseInt(String.valueOf(protein));
-                    int cValue = Integer.parseInt(String.valueOf(carbs));
-                    int fValue = Integer.parseInt(String.valueOf(fat));
-                    total_sum += tValue;
-                    protein_sum += pValue;
-                    carb_sum += cValue;
-                    fat_sum += fValue;
+
+                    Object date = map.get("date");
+                    String dateStr = String.valueOf(date);
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(dateStr.equals(dateCurr)){
+
+                        Object calories = map.get("totalCalories");
+                        Object protein = map.get("protein");
+                        Object carbs = map.get("carbs");
+                        Object fat = map.get("fat");
+                        int tValue = Integer.parseInt(String.valueOf(calories));
+                        int pValue = Integer.parseInt(String.valueOf(protein));
+                        int cValue = Integer.parseInt(String.valueOf(carbs));
+                        int fValue = Integer.parseInt(String.valueOf(fat));
+                        total_sum += tValue;
+                        protein_sum += pValue;
+                        carb_sum += cValue;
+                        fat_sum += fValue;
+
+                    }
 
                 }
                 total_progress = (total_sum*100)/totCalTemp;
