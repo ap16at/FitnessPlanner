@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.view.LayoutInflater;
@@ -32,8 +33,11 @@ public class LoginForm extends DialogFragment {
 
     EditText username;
     EditText password;
+    Button login;
 
     boolean success;
+    private String user_name;
+    private String pass_word;
 
     LoginListener listener;
     private FirebaseAuth mAuth;
@@ -55,6 +59,9 @@ public class LoginForm extends DialogFragment {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         mDatabase = database.getReference();
 
+        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPref.edit();
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -63,50 +70,6 @@ public class LoginForm extends DialogFragment {
 
         builder.setView(view)
                 .setTitle("Login")
-                .setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String user = username.getText().toString().trim();
-                        String pass = password.getText().toString().trim();
-
-
-                        boolean found = false;
-
-                        //check database, confirm user and password
-                        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String dbPassword;
-                                if(snapshot.hasChild("pabloH"))
-                                {
-                                    DataSnapshot user = snapshot.child("pabloH");
-                                    Map<String,Object> values = (HashMap<String,Object>) user.getValue();
-                                    dbPassword = values.get("password").toString();
-                                    if(dbPassword.equals(pass))
-                                        setLoginSuccess(true);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-                        if(getLoginSuccess())
-                        {
-                            dialog.dismiss();
-                        }
-                        else
-                        {
-
-                            Toast.makeText(getContext(),"Username and Password does not match", Toast.LENGTH_LONG).show();
-                        }
-
-                        listener.getUser(user,pass);
-
-                    }
-                })
                 .setNeutralButton("Sign Up", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -121,6 +84,46 @@ public class LoginForm extends DialogFragment {
 
         username = view.findViewById(R.id.username);
         password = view.findViewById(R.id.password);
+        login = view.findViewById(R.id.Login);
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String user = username.getText().toString().trim();
+                String pass = password.getText().toString().trim();
+
+                setUser(user);
+                setPassword(pass);
+
+
+                boolean found = false;
+
+                //check database, confirm user and password
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String dbPassword;
+                        if(snapshot.hasChild(getUser()))
+                        {
+                            DataSnapshot user = snapshot.child(getUser());
+                            Map<String,Object> values = (HashMap<String,Object>) user.getValue();
+                            dbPassword = values.get("password").toString();
+                            if(dbPassword.equals(getPassword()))
+                                dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
+                listener.getUser(user,pass);
+            }
+        });
 
         return builder.create();
     }
@@ -138,4 +141,25 @@ public class LoginForm extends DialogFragment {
     {
         return success;
     }
+
+    private void setUser(String user_name)
+    {
+        this.user_name = user_name;
+    }
+
+    private String getUser()
+    {
+        return user_name;
+    }
+
+    private void setPassword(String pass_word)
+    {
+        this.pass_word = pass_word;
+    }
+
+    private String getPassword()
+    {
+        return pass_word;
+    }
+
 }
