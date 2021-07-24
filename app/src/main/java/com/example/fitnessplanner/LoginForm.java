@@ -97,36 +97,38 @@ public class LoginForm extends DialogFragment {
 
                 boolean found = false;
 
-                //check database, confirm user and password
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String dbPassword;
-                        if(snapshot.hasChild(getUser()))
-                        {
-                            DataSnapshot user = snapshot.child(getUser());
-                            Map<String,Object> values = (HashMap<String,Object>) user.getValue();
-                            dbPassword = values.get("password").toString();
-                            if(dbPassword.equals(getPassword().trim())) {
-                                Toast.makeText(getContext(),"Successful Login", Toast.LENGTH_LONG).show();
-                                SharedPreferences pref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
-                                SharedPreferences.Editor editor = pref.edit();
-                                editor.putString("user", getUser());
-                                editor.putBoolean("signin", false);
-                                editor.putString("fullname",values.get("fullName").toString());
-                                editor.commit();
-                                dismiss();
+                if (!user.isEmpty() && !pass.isEmpty()){
+                    //check database, confirm user and password
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String dbPassword;
+                            if (snapshot.hasChild(getUser())) {
+                                DataSnapshot user = snapshot.child(getUser());
+                                Map<String, Object> values = (HashMap<String, Object>) user.getValue();
+                                dbPassword = values.get("password").toString();
+                                if (dbPassword.equals(getPassword().trim())) {
+                                    Toast.makeText(getContext(), "Successful Login", Toast.LENGTH_LONG).show();
+                                    SharedPreferences pref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.putString("user", getUser());
+                                    editor.putBoolean("signin", false);
+                                    editor.putString("fullname", values.get("fullName").toString());
+                                    editor.commit();
+                                    dismiss();
+                                } else
+                                    Toast.makeText(getContext(), "Login Attemp Failed", Toast.LENGTH_LONG).show();
                             }
-                            else
-                                Toast.makeText(getContext(), "Login Attemp Failed", Toast.LENGTH_LONG).show();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+            }
+                else
+                    Toast.makeText(getContext(),"Fields Are Empty", Toast.LENGTH_LONG).show();
 
 
 
