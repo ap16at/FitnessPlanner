@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
 
         workouts_display = view.findViewById(R.id.workouts_display);
 
-
+        water_progress = mPref.getInt("waterProg", 0);
         waterBarUpdate();
 
         button_decrease.setOnClickListener(new View.OnClickListener() {
