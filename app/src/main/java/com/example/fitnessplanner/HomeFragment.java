@@ -40,7 +40,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
-    //TODO: Progress bar stuff
     int water_progress = 0;
     int calorie_progress = 0;
     private ProgressBar water_progress_bar;
@@ -181,7 +180,6 @@ public class HomeFragment extends Fragment {
 
     private void calorieBarUpdate(){
 
-        //TODO: Allow user to input calorie goals to replace these temporary ones:
         int totCalTemp = 2200;
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
