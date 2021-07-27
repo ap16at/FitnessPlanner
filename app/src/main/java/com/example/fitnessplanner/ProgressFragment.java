@@ -92,7 +92,12 @@ public class ProgressFragment extends Fragment {
         weightLog = fragment.findViewById(R.id.recents);
         progressGraph = fragment.findViewById(R.id.progressGraph);
         graphRange = fragment.findViewById(R.id.range);
-        graphRange.setOnItemSelectedListener(graphListener);
+        graphRange.post(new Runnable() {
+            @Override
+            public void run() {
+                graphRange.setOnItemSelectedListener(graphListener);
+            }
+        });
 
         allData = new ArrayList<WeightLog>();
 
@@ -223,7 +228,7 @@ public class ProgressFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(position == 1 || position == 2)
             {
-                week = true;
+                progressGraph.removeAllSeries();
                 weights.clear();
 
                 //data
@@ -344,9 +349,8 @@ public class ProgressFragment extends Fragment {
             else
             {
 
-                if(week)
-                {
                     weights.clear();
+                    progressGraph.removeAllSeries();
                     weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -431,7 +435,7 @@ public class ProgressFragment extends Fragment {
                         }
                     });
                     week = true;
-                }
+
             }
         }
 
