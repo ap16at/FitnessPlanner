@@ -10,9 +10,9 @@
         android:id="@+id/profileName"
         android:layout_width="212dp"
         android:layout_height="36dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="11dp"
-        android:layout_marginRight="11dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="Name"
         android:textColor="#020202"
         android:textSize="24sp"
@@ -41,36 +41,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileName" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="27dp"
         android:layout_marginRight="27dp"
-        android:layout_marginBottom="228dp"
-        android:adjustViewBounds="true"
-        android:clickable="true"
+        android:layout_marginBottom="200dp"
         android:contentDescription="@string/profileView"
-        android:scaleType="fitStart"
         app:layout_constraintBottom_toTopOf="@+id/SettingsList"
         app:layout_constraintEnd_toStartOf="@+id/goalsField"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@tools:sample/avatars" />
 
     <ListView
         android:id="@+id/SettingsList"
         android:layout_width="412dp"
         android:layout_height="310dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="4dp"
         android:entries="@array/Settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

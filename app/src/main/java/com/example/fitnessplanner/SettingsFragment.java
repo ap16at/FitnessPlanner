@@ -75,16 +75,28 @@ public class SettingsFragment extends Fragment {
                     break;
                 case 3:     //units
                     String[] str_array = getResources().getStringArray(R.array.units);
+                    int choice;
+                    if(mPref.getString("units","LBS").equals("LBS"))
+                        choice = 0;
+                    else
+                        choice =1;
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Units")
                             .setNegativeButton("Cancel", null)
                             .setPositiveButton("Confirm",null)
                             .setCancelable(false)
-                            .setSingleChoiceItems(R.array.units, 0, new DialogInterface.OnClickListener() {
+                            .setSingleChoiceItems(R.array.units, choice, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            editor.putString("units", str_array[which]);
-                                            editor.commit();
+                                            if(which == 0) {
+                                                editor.putString("units", "LBS");
+                                                editor.commit();
+                                            }
+                                            else {
+                                                editor.putString("units", "KG");
+                                                editor.commit();
+                                            }
+
                                             Toast.makeText(getContext(),  str_array[which] + " units selected", Toast.LENGTH_LONG).show();
                                             //store in the app
                                         }
@@ -152,8 +164,8 @@ public class SettingsFragment extends Fragment {
 
         int imageResource = getResources().getIdentifier("@drawable/avatar", null, getActivity().getPackageName());
         image.setImageResource(imageResource);
-        image.getLayoutParams().width = 250;
-        image.getLayoutParams().height = 250;
+        image.getLayoutParams().width = 200;
+        image.getLayoutParams().height = 200;
 
 
         nameField.setText(mPref.getString("fullname", "N/A"));

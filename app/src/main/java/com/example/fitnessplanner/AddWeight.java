@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -42,8 +43,19 @@ public class AddWeight extends DialogFragment{
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        SharedPreferences pref = getActivity().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.weight_add, null);
+
+        datePicker = view.findViewById(R.id.imageFilterButton);
+        weight = view.findViewById(R.id.weightInput);
+        date = view.findViewById(R.id.dateInput);
+        units = view.findViewById(R.id.units);
+
+        String unit = pref.getString("units", "LBS");
+
+        units.setText(unit);
+
         builder.setView(view)
                 .setTitle("Add Weight")
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -61,10 +73,7 @@ public class AddWeight extends DialogFragment{
                     }
                 });
 
-        datePicker = view.findViewById(R.id.imageFilterButton);
-        weight = view.findViewById(R.id.weightInput);
-        date = view.findViewById(R.id.dateInput);
-        units = view.findViewById(R.id.units);
+
 
         datePicker.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
