@@ -39,39 +39,6 @@
         app:rippleColor="#AAA6A6" />
 
     <TextView
-        android:id="@+id/notification2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:background="#FFFFFF"
-        android:paddingLeft="5dp"
-        android:text="Password"
-        android:textColor="#2CAEA8"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/passwordChange"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:fontFamily="sans-serif"
-        android:gravity="left"
-        android:text="Change Password"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textColor="@color/navy_accent"
-        android:textSize="18sp"
-        app:backgroundTint="#FFFFFF"
-        app:iconTint="#FFFFFF"
-        app:rippleColor="#AAA6A6" />
-
-    <TextView
         android:id="@+id/notification3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -96,7 +63,7 @@
         android:layout_marginRight="15dp"
         android:fontFamily="sans-serif"
         android:gravity="left"
-        android:text="Change Profile Image"
+        android:text="Change Avatar"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/navy_accent"
         android:textSize="18sp"

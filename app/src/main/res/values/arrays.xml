@@ -30,4 +30,10 @@
         <item>Gain Weight</item>
         <item>Maintain Weight</item>
     </string-array>
+
+    <string-array name="avatars">
+        <item>Original</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>

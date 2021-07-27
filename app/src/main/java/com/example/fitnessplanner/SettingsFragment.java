@@ -31,6 +31,9 @@ public class SettingsFragment extends Fragment {
     TextView nameField;
     ListView settingList;
     ImageView image;
+    TextView current;
+    TextView goal;
+
     SharedPreferences mPref;
     SharedPreferences.Editor editor;
 
@@ -55,6 +58,7 @@ public class SettingsFragment extends Fragment {
                             .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    goal.setText(mPref.getString("goal", "Lose Weight"));
                                     dialog.dismiss();
                                 }
                             })
@@ -68,7 +72,10 @@ public class SettingsFragment extends Fragment {
                             .setSingleChoiceItems(R.array.goals, 1, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(getContext(),which+" selected", Toast.LENGTH_LONG).show();
+                                    String[] goalAry = getResources().getStringArray(R.array.goals);
+                                    editor.putString("goal", goalAry[which]);
+                                    editor.commit();
+
                                 }
                             }).create().show();
                     //change goal
@@ -161,14 +168,29 @@ public class SettingsFragment extends Fragment {
         nameField = fragment.findViewById(R.id.profileName);
         settingList = fragment.findViewById(R.id.SettingsList);
         image = fragment.findViewById(R.id.imageView);
+        current = fragment.findViewById(R.id.currentField);
+        goal = fragment.findViewById(R.id.goalsField);
 
         int imageResource = getResources().getIdentifier("@drawable/avatar", null, getActivity().getPackageName());
+        switch(mPref.getInt("avatar",0)) {
+            case 0:
+                break;
+            case 1:
+                imageResource = getResources().getIdentifier("@drawable/male", null, getActivity().getPackageName());
+                break;
+            case 2:
+                imageResource = getResources().getIdentifier("@drawable/female", null, getActivity().getPackageName());
+                break;
+
+        }
         image.setImageResource(imageResource);
         image.getLayoutParams().width = 200;
         image.getLayoutParams().height = 200;
 
 
         nameField.setText(mPref.getString("fullname", "N/A"));
+        goal.setText(mPref.getString("goal", "Lose Weight"));
+
         settingList.setOnItemClickListener(listListener);
         return fragment;
     }

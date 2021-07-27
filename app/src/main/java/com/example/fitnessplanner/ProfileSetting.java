@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,18 +33,10 @@ public class ProfileSetting extends DialogFragment {
     Button profileImg;
     Button logout;
     SharedPreferences pref;
-    Uri imageUri;
+    ImageView image;
+    TextView name;
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null)
-        {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            imageUri = result.getUri();
-        }
-    }
 
 
     @NonNull
@@ -51,6 +44,9 @@ public class ProfileSetting extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         pref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
+
+        image = getActivity().findViewById(R.id.imageView);
+        name = getActivity().findViewById(R.id.profileName);
 
         EditText nameField = new EditText(getContext());
         nameField.setHint("Full Name");
@@ -68,7 +64,6 @@ public class ProfileSetting extends DialogFragment {
 
 
         fullname = view.findViewById(R.id.fullname);
-        password = view.findViewById(R.id.passwordChange);
         profileImg = view.findViewById(R.id.imageChange);
         logout = view.findViewById(R.id.logout);
 
@@ -86,6 +81,7 @@ public class ProfileSetting extends DialogFragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 //update database
                                 Toast.makeText(getContext(),"Name Change Successful", Toast.LENGTH_LONG).show();
+                                name.setText(nameField.getText().toString());
                                 editor.putString("fullname", nameField.getText().toString());
                                 editor.commit();
                             }
@@ -96,31 +92,47 @@ public class ProfileSetting extends DialogFragment {
             }
         });
 
-        password.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Change Password")
-                        .setView(passField)
-                        .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //update database
-                                Toast.makeText(getContext(), "Password Change Attempt", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .setCancelable(false)
-                        .setNegativeButton("Cancel", null)
-                        .create().show();
-            }
-        });
 
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //image change to gallery
-                CropImage.activity().setAspectRatio(1,1).start(getActivity());
-                Toast.makeText(getContext(),"Not Yet Implemented", Toast.LENGTH_LONG).show();
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Change Avatar")
+                        .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int imageResource = getResources().getIdentifier("@drawable/avatar", null, getActivity().getPackageName());
+                                switch(pref.getInt("avatar",0)) {
+                                    case 0:
+                                        break;
+                                    case 1:
+                                        imageResource = getResources().getIdentifier("@drawable/male", null, getActivity().getPackageName());
+                                        break;
+                                    case 2:
+                                        imageResource = getResources().getIdentifier("@drawable/female", null, getActivity().getPackageName());
+                                        break;
+
+                                }
+                                image.setImageResource(imageResource);
+                                image.getLayoutParams().width = 200;
+                                image.getLayoutParams().height = 200;
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setSingleChoiceItems(R.array.avatars, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editor.putInt("avatar", which);
+                                editor.commit();
+                            }
+                        }).create().show();
             }
         });
 
