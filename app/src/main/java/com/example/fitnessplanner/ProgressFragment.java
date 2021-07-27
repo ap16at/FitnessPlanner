@@ -202,11 +202,6 @@ public class ProgressFragment extends Fragment {
         return fragment;
     }
 
-    private void displayGraph(int range)
-    {
-
-    }
-
     private void addToArray(WeightLog weight)
     {
         weights.add(weight);
