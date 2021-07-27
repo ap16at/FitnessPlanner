@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.renderscript.Sampler;
@@ -115,6 +116,9 @@ public class LoginForm extends DialogFragment {
                                     editor.putBoolean("signin", false);
                                     editor.putString("fullname", values.get("fullName").toString());
                                     editor.commit();
+                                    Intent intent = new Intent(getActivity(),MainActivity.class);
+                                    getActivity().finish();
+                                    startActivity(intent);
                                     dismiss();
                                 } else
                                     Toast.makeText(getContext(), "Login Attemp Failed", Toast.LENGTH_LONG).show();
