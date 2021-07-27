@@ -124,7 +124,7 @@ public class NutritionFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference(userName);
         mealRef = userRef.child("Meals");
-        update_progress_bars();
+        updateProgressBars();
 
         mealItems = new ArrayList<>();
 
@@ -182,7 +182,7 @@ public class NutritionFragment extends Fragment {
         meals_display.setItemAnimator(new DefaultItemAnimator());
     }
 
-    private void update_progress_bars(){
+    private void updateProgressBars(){
 
         //TODO: Allow user to input calorie goals to replace these temporary ones:
 

@@ -58,13 +58,6 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,14 +78,14 @@ public class HomeFragment extends Fragment {
 
         workouts_display = view.findViewById(R.id.workouts_display);
 
-        water_bar_update();
+        waterBarUpdate();
 
         button_decrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(water_progress >= 10){
                     water_progress -= 10;
-                    water_bar_update();
+                    waterBarUpdate();
                 }
             }
         });
@@ -103,7 +96,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 if(water_progress <= 90){
                     water_progress += 10;
-                    water_bar_update();
+                    waterBarUpdate();
                 }
 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -152,7 +145,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        calorie_bar_update();
+        calorieBarUpdate();
 
         return view;
 
@@ -168,7 +161,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    void water_bar_update(){
+    void waterBarUpdate(){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -178,7 +171,7 @@ public class HomeFragment extends Fragment {
         }, 50);
     }
 
-    private void calorie_bar_update(){
+    private void calorieBarUpdate(){
 
         //TODO: Allow user to input calorie goals to replace these temporary ones:
         int totCalTemp = 2200;

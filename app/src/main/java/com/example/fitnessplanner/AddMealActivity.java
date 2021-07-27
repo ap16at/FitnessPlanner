@@ -219,7 +219,7 @@ public class AddMealActivity extends AppCompatActivity {
                             }
                         };
 
-                        update_progress_bars();
+                        updateProgressBars();
                         Toast.makeText(AddMealActivity.this, "Meal Successfully Added!", Toast.LENGTH_SHORT).show();
                     }
 
@@ -281,7 +281,7 @@ public class AddMealActivity extends AppCompatActivity {
         userRef = database.getReference(userName);
         mealRef = userRef.child("Meals");
 
-        update_progress_bars();
+        updateProgressBars();
 
         mealItems = new ArrayList<>();
 
@@ -342,7 +342,7 @@ public class AddMealActivity extends AppCompatActivity {
 
     }
 
-    private void update_progress_bars(){
+    private void updateProgressBars(){
 
         //TODO: Allow user to input calorie goals to replace these temporary ones:
 

@@ -21,9 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.firebase.storage.StorageReference;
-import com.theartofdev.edmodo.cropper.CropImage;
-
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileSetting extends DialogFragment {
