@@ -7,14 +7,15 @@
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
-    <string name="profileName">profileName</string>
     <string-array name="Settings">
         <item>Profile</item>
         <item>Notifications</item>
         <item>Goals</item>
         <item>Units</item>
-        <item>Help</item>
+        <item>About</item>
     </string-array>
+    <string name="profileView">profileImage</string>
+    <string name="currentField">currentField</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
@@ -36,7 +37,7 @@
     <string name="todo">TODO</string>
     <string name="name">Name</string>
     <string name="current">Current:</string>
-    <string name="goals">Goals:</string>
+    <string name="goals">Goal:</string>
     <string name="meal_description">Meal Description:</string>
     <string name="description">Description</string>
     <string name="serving_size">Serving Size:</string>
@@ -49,4 +50,6 @@
     <string name="carbs">Carbs:</string>
     <string name="fat">Fat:</string>
     <string name="meal_display">Meal Display</string>
+    <string name="title_activity_notification_setting">NotificationSetting</string>
+    <string name="nutrition">Nutrition</string>
 </resources>

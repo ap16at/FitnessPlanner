@@ -6,59 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-    <ImageView
+    <TextView
+        android:id="@+id/profileName"
+        android:layout_width="212dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Name"
+        android:textColor="#020202"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/goalsField"
+        android:layout_width="165dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/currentField" />
+
+    <TextView
+        android:id="@+id/currentField"
+        android:layout_width="107dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginRight="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileName" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/todo"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginRight="27dp"
+        android:layout_marginBottom="200dp"
+        android:contentDescription="@string/profileView"
+        app:layout_constraintBottom_toTopOf="@+id/SettingsList"
+        app:layout_constraintEnd_toStartOf="@+id/goalsField"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@id/profileName"
-        android:layout_width="144dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/name"
-        android:textColor="#020202"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/currentField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/current"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/profileName" />
-
-    <TextView
-        android:id="@+id/goalsField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:text="@string/goals"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/currentField" />
-
     <ListView
-        android:layout_width="411dp"
-        android:layout_height="262dp"
+        android:id="@+id/SettingsList"
+        android:layout_width="412dp"
+        android:layout_height="310dp"
+        android:layout_marginBottom="4dp"
         android:entries="@array/Settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="38dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="165dp"
+        android:layout_marginLeft="165dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="12dp"
+        android:paddingLeft="5dp"
+        android:text="Goal:"
+        app:layout_constraintBottom_toBottomOf="@+id/goalsField"
+        app:layout_constraintEnd_toStartOf="@+id/goalsField"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="60dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:text="Current:"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/currentField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

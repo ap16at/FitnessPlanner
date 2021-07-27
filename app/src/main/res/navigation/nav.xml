@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/nutritionFragment"
-        android:name="com.example.fitnessplanner.WorkoutFragment"
+        android:name="com.example.fitnessplanner.NutritionFragment"
         android:label="fragment_nutrition"
-        tools:layout="@layout/fragment_workout" />
+        tools:layout="@layout/fragment_nutrition" />
     <fragment
         android:id="@+id/workoutFragment"
         android:name="com.example.fitnessplanner.ProgressFragment"

@@ -1,66 +1,71 @@
 package com.example.fitnessplanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.fitnessplanner.adapters.MealsAdapter;
+import com.example.fitnessplanner.adapters.WorkoutAdapter;
 import com.example.fitnessplanner.models.Meal;
+import com.example.fitnessplanner.models.WorkoutItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class HomeFragment extends Fragment {
 
-    //TODO: Progress bar stuff
     int water_progress = 0;
     int calorie_progress = 0;
-    int workout_progress = 0;
     private ProgressBar water_progress_bar;
     private ProgressBar calorie_progress_bar;
-    private ProgressBar workout_progress_bar;
     private Button button_increase;
     private Button button_decrease;
-    private Button add_a_meal;
-    private RecyclerView meals_display;
-    private ArrayList<Meal> mealItems;
+    private RecyclerView workouts_display;
+    private ArrayList<WorkoutItem> workoutItems;
+
+    //test
+    SharedPreferences mPref;
+    SharedPreferences.Editor editor;
+
 
     FirebaseDatabase database;
+    DatabaseReference workoutRef;
+    DatabaseReference userRef;
     DatabaseReference mealRef;
-    DatabaseReference specificMealRef;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {}
     }
 
     @Override
@@ -69,78 +74,74 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        editor = mPref.edit();
+
         water_progress_bar = view.findViewById(R.id.water_progress_bar);
         calorie_progress_bar = view.findViewById(R.id.calorie_progress_bar);
-        workout_progress_bar = view.findViewById(R.id.workout_progress_bar);
 
         button_decrease = view.findViewById(R.id.water_decrease_button);
         button_increase = view.findViewById(R.id.water_increase_button);
 
-        add_a_meal = view.findViewById(R.id.button_add_meal);
-        meals_display = view.findViewById(R.id.meals_display);
+        workouts_display = view.findViewById(R.id.workouts_display);
 
-        water_bar_update();
+        water_progress = mPref.getInt("waterProg", 0);
+        waterBarUpdate();
 
         button_decrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(water_progress >= 10){
                     water_progress -= 10;
-                    water_bar_update();
+                    editor.putInt("waterProg", water_progress);
+                    editor.commit();
+                    waterBarUpdate();
                 }
             }
         });
 
         button_increase.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 if(water_progress <= 90){
                     water_progress += 10;
-                    water_bar_update();
+                    editor.putInt("waterProg", water_progress);
+                    editor.commit();
+                    waterBarUpdate();
                 }
+
             }
         });
 
-        add_a_meal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), AddMealActivity.class));
-            }
-        });
+
+        String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
-        mealRef = database.getReference("Meals");
-        calorie_bar_update();
+        userRef = database.getReference(userName);
+        mealRef = userRef.child("Meals");
+        workoutRef = database.getReference("Workouts");
+        workoutItems = new ArrayList<>();
 
-        mealItems = new ArrayList<>();
-
-        mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+        workoutRef.orderByChild("Workouts").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 for(DataSnapshot ds : snapshot.getChildren()){
+                    Map<String, Object> map = (Map<String, Object>) ds.getValue();
+                    Object type = map.get("WorkoutType");
+                    Object info = map.get("WorkoutInfo");
+                    Object id = map.get("YoutubeID");
 
-                    Map<String, Object>map = (Map<String,Object>) ds.getValue();
-                    Object descrip = map.get("description");
-                    Object size = map.get("servingSize");
-                    Object calories = map.get("totalCalories");
-                    Object protein = map.get("protein");
-                    Object carbs = map.get("carbs");
-                    Object fat = map.get("fat");
+                    String tValue = String.valueOf(type);
+                    String iValue = String.valueOf(info);
+                    String idString = String.valueOf(id);
+                    String idValue = "<iframe width=\"100%\" height=\"100%\" src=\"" + String.format("https://www.youtube.com/embed/%s", idString + "\" frameborder=\"0\" allowfullscreen><iframe>");
 
-                    String dValue = String.valueOf(descrip);
-                    int sValue = Integer.parseInt(String.valueOf(size));
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    int pValue = Integer.parseInt(String.valueOf(protein));
-                    int cValue = Integer.parseInt(String.valueOf(carbs));
-                    int fValue = Integer.parseInt(String.valueOf(fat));
-
-                    System.out.println("des: " + dValue + " calories: " + cValue);
-
-                    mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue));
+                    workoutItems.add(new WorkoutItem(tValue, iValue, idValue));
                 }
 
                 setRecyclerView(view);
+
             }
 
             @Override
@@ -149,36 +150,39 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        calorieBarUpdate();
+
         return view;
 
     }
 
     private void setRecyclerView(View v){
 
-        meals_display = v.findViewById(R.id.meals_display);
-        meals_display.setLayoutManager(new LinearLayoutManager(getActivity()));
-        MealsAdapter mealsAdapter = new MealsAdapter(getActivity(), mealItems);
-        meals_display.setAdapter(mealsAdapter);
-        meals_display.setItemAnimator(new DefaultItemAnimator());
+        workouts_display = v.findViewById(R.id.workouts_display);
+        workouts_display.setLayoutManager(new LinearLayoutManager(getActivity()));
+        WorkoutAdapter workoutAdapter = new WorkoutAdapter(getActivity(), workoutItems);
+        workouts_display.setAdapter(workoutAdapter);
+        workouts_display.setItemAnimator(new DefaultItemAnimator());
 
     }
 
-    void water_bar_update(){
+    void waterBarUpdate(){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                water_progress_bar.setProgress(water_progress);
+                water_progress_bar.setProgress(mPref.getInt("waterProg",0));
+                //Toast.makeText(getContext(),"Run!", Toast.LENGTH_LONG).show();
             }
         }, 50);
     }
 
-    private void calorie_bar_update(){
+    private void calorieBarUpdate(){
 
-        //TODO: Allow user to input calorie goals to replace these temporary ones:
         int totCalTemp = 2200;
 
         mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -186,9 +190,19 @@ public class HomeFragment extends Fragment {
                 for(DataSnapshot ds : snapshot.getChildren()){
 
                     Map<String, Object> map = (Map<String,Object>) ds.getValue();
-                    Object calories = map.get("totalCalories");
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    total_sum += tValue;
+
+                    Object date = map.get("date");
+                    String dateStr = String.valueOf(date);
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(dateStr.equals(dateCurr)){
+                        Object calories = map.get("totalCalories");
+                        int tValue = Integer.parseInt(String.valueOf(calories));
+                        total_sum += tValue;
+                    }
 
                 }
                 calorie_progress = (total_sum*100)/totCalTemp;

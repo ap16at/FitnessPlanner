@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="25dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/profilename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#FFFFFF"
+        android:text="Profile Name"
+        android:textColor="#2CAEA8"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/fullname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:fontFamily="sans-serif"
+        android:gravity="left"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/navy_accent"
+        android:textSize="18sp"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#FFFFFF"
+        app:rippleColor="#AAA6A6" />
+
+    <TextView
+        android:id="@+id/notification3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:background="#FFFFFF"
+        android:paddingLeft="5dp"
+        android:text="Profile Image"
+        android:textColor="#2CAEA8"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/imageChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:fontFamily="sans-serif"
+        android:gravity="left"
+        android:text="Change Avatar"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/navy_accent"
+        android:textSize="18sp"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#FFFFFF"
+        app:rippleColor="#AAA6A6" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif"
+        android:gravity="left"
+        android:text="Logout"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/navy_accent"
+        android:textSize="18sp"
+        app:backgroundTint="#FFFFFF"
+        app:iconTint="#FFFFFF"
+        app:rippleColor="#AAA6A6" />
+
+</LinearLayout>
