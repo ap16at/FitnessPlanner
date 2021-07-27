@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:title="@string/home"
+        android:icon="@drawable/home_icon"/>
+    <item
+        android:id="@+id/nutritionFragment"
+        android:title= "@string/nutrition"
+        android:icon="@drawable/nutrition_icon" />
+    <item
+        android:id="@+id/workoutFragment"
+        android:title="@string/progress"
+        android:icon="@drawable/progress_icon" />
+    <item
+        android:id="@+id/progressFragment"
+        android:title="@string/settings"
+        android:icon="@drawable/settings_icon" />
+</menu>

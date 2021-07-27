@@ -1,0 +1,39 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+
+    <string-array name="units">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </string-array>
+    <string-array name="graph">
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+    <string-array name="reminders">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+        <item>Weight Log</item>
+    </string-array>
+    <string-array name="goals">
+        <item>Lose Weight</item>
+        <item>Gain Weight</item>
+        <item>Maintain Weight</item>
+    </string-array>
+
+    <string-array name="avatars">
+        <item>Original</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+</resources>
