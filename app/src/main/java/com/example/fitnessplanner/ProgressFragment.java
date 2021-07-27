@@ -127,10 +127,6 @@ public class ProgressFragment extends Fragment {
             }
         });
 
-//        weightLogAdapter = new WeightLogAdapter(getContext(),weights);
-//
-//        weightLog.setAdapter(weightLogAdapter);
-
         //test graph
         series = new LineGraphSeries<DataPoint>();
 
@@ -203,7 +199,7 @@ public class ProgressFragment extends Fragment {
 
         weightLog = v.findViewById(R.id.recents);
         weightLog.setLayoutManager(new LinearLayoutManager(getActivity()));
-        WeightLogAdapter weightLogAdapter = new WeightLogAdapter(getActivity(), weights);
+        WeightLogAdapter weightLogAdapter = new WeightLogAdapter(getActivity(), weightsRev);
         weightLog.setAdapter(weightLogAdapter);
         weightLog.setItemAnimator(new DefaultItemAnimator());
     }
