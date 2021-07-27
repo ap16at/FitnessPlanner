@@ -48,6 +48,8 @@ public class ProfileSetting extends DialogFragment {
         image = getActivity().findViewById(R.id.imageView);
         name = getActivity().findViewById(R.id.profileName);
 
+
+
         EditText nameField = new EditText(getContext());
         nameField.setHint("Full Name");
 

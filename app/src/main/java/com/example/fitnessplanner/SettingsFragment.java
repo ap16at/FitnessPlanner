@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -18,6 +19,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fitnessplanner.models.WeightLog;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Map;
+
 
 public class SettingsFragment extends Fragment {
 
@@ -26,6 +42,11 @@ public class SettingsFragment extends Fragment {
     ImageView image;
     TextView current;
     TextView goal;
+
+
+    FirebaseDatabase database;
+    DatabaseReference userRef;
+    DatabaseReference weightRef;
 
     SharedPreferences mPref;
     SharedPreferences.Editor editor;
@@ -166,6 +187,56 @@ public class SettingsFragment extends Fragment {
         mPref = getContext().getSharedPreferences("prefs",Context.MODE_PRIVATE);
         editor = mPref.edit();
 
+        String userName = mPref.getString("user", "fluffy");
+
+        database = FirebaseDatabase.getInstance();
+        userRef = database.getReference(userName);
+        weightRef = userRef.child("WeightLog");
+
+
+
+        weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<WeightLog> weights = new ArrayList<WeightLog>();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                    Map<String, Object> map = (Map<String, Object>) ds.getValue();
+                    Object date = map.get("date");
+                    Object weight = map.get("weight");
+                    Object units = map.get("units");
+
+                    String dValue = String.valueOf(date);
+                    double wValue = Double.parseDouble(String.valueOf(weight));
+                    String uValue = String.valueOf(units);
+
+                    weights.add(new WeightLog(dValue, wValue, uValue));
+
+
+                }
+
+                Collections.sort(weights, new Comparator<WeightLog>() {
+                    public int compare(WeightLog w1, WeightLog w2){
+                        Date date1 = new Date();
+                        Date date2 = new Date();
+                        try {
+                            date1 = new SimpleDateFormat("MM-dd-yyyy").parse(w1.getDate());
+                            date2 = new SimpleDateFormat("MM-dd-yyyy").parse(w2.getDate());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return date1.compareTo(date2);
+                    }
+                });
+
+                current.setText(weights.get(weights.size()-1).getWeight() + " " + weights.get(weights.size()-1).getUnits());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         nameField = fragment.findViewById(R.id.profileName);
         settingList = fragment.findViewById(R.id.SettingsList);
         image = fragment.findViewById(R.id.imageView);
@@ -191,6 +262,7 @@ public class SettingsFragment extends Fragment {
 
         nameField.setText(mPref.getString("fullname", "N/A"));
         goal.setText(mPref.getString("goal", "Lose Weight"));
+
 
         settingList.setOnItemClickListener(listListener);
         return fragment;
