@@ -1,9 +1,12 @@
 package com.example.fitnessplanner;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,9 +18,15 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.fitnessplanner.adapters.MealsAdapter;
 import com.example.fitnessplanner.adapters.WeightLogAdapter;
 import com.example.fitnessplanner.models.WeightLog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -27,12 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProgressFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProgressFragment extends Fragment {
 
     LineGraphSeries<DataPoint> series;
@@ -45,45 +50,22 @@ public class ProgressFragment extends Fragment {
     Spinner graphRange;
     ArrayList<WeightLog> weights;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FirebaseDatabase database;
+    DatabaseReference userRef;
+    DatabaseReference weightRef;
 
     public ProgressFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProgressFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProgressFragment newInstance(String param1, String param2) {
+    public static ProgressFragment newInstance() {
         ProgressFragment fragment = new ProgressFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -106,35 +88,59 @@ public class ProgressFragment extends Fragment {
 
         weightLog.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        String userName = mPref.getString("user", "fluffy");
 
+        database = FirebaseDatabase.getInstance();
+        userRef = database.getReference(userName);
+        weightRef = userRef.child("WeightLog");
 
         weights = new ArrayList<>();
 
-        //Tests
-        Date date = new Date(2021, 0,1);
-        weights.add(new WeightLog(date, 150.00, "lbs"));
-        Date date1 = new Date(2021,0,2);
-        weights.add(new WeightLog(date1, 151.00, "lbs"));
-        Date date2 = new Date(2021,0,3);
-        weights.add(new WeightLog(date2, 152.00, "lbs"));
-        Date date3 = new Date(2021,0,5);
-        weights.add(new WeightLog(date3, 153.00, "lbs"));
-        //Test Dates End
+        weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren()){
 
-        weightLogAdapter = new WeightLogAdapter(getContext(),weights);
+                    Map<String, Object> map = (Map<String,Object>) ds.getValue();
+                    Object date = map.get("date");
+                    Object weight = map.get("weight");
+                    Object units = map.get("units");
 
-        weightLog.setAdapter(weightLogAdapter);
+                    String dValue = String.valueOf(date);
+                    double wValue = Double.parseDouble(String.valueOf(weight));
+                    String uValue = String.valueOf(units);
+
+                    weights.add(new WeightLog(dValue, wValue, uValue));
+
+                    System.out.println(dValue + " " + wValue);
+
+                }
+
+                setRecyclerView(fragment);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+//        weightLogAdapter = new WeightLogAdapter(getContext(),weights);
+//
+//        weightLog.setAdapter(weightLogAdapter);
 
         //test graph
         series = new LineGraphSeries<DataPoint>();
 
         //Test Graph
-        for(int i=0;i<4;i++)
-        {
-            WeightLog weight = weights.get(i);
-            System.out.println(weight.getDate());
-            series.appendData(new DataPoint(weight.getDate(),weight.getWeight()), true, 4);
-        }
+//        for(int i=0;i<4;i++)
+//        {
+//            WeightLog weight = weights.get(i);
+//            System.out.println(weight.getDate());
+////            series.appendData(new DataPoint(weight.getDate(),weight.getWeight()), true, 4);
+//        }
         //Test graph ends
 
         progressGraph.addSeries(series);
@@ -186,5 +192,20 @@ public class ProgressFragment extends Fragment {
             }
         }
     };
+
+    private void setRecyclerView(View v){
+
+        ArrayList<WeightLog> weightsRev = new ArrayList<>();
+
+        for(int i = weights.size() - 1; i >= 0; i--){
+            weightsRev.add(weights.get(i));
+        }
+
+        weightLog = v.findViewById(R.id.recents);
+        weightLog.setLayoutManager(new LinearLayoutManager(getActivity()));
+        WeightLogAdapter weightLogAdapter = new WeightLogAdapter(getActivity(), weights);
+        weightLog.setAdapter(weightLogAdapter);
+        weightLog.setItemAnimator(new DefaultItemAnimator());
+    }
 
 }

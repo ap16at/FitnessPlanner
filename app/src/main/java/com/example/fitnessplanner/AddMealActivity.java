@@ -203,10 +203,10 @@ public class AddMealActivity extends AppCompatActivity {
 
                         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
                         LocalDateTime now = LocalDateTime.now();
-                        System.out.println(dtf.format(now));
+//                        System.out.println(dtf.format(now));
                         String date = dtf.format(now);
-                        String TAG = "DATE";
-                        Log.i(TAG, date);
+//                        String TAG = "DATE";
+//                        Log.i(TAG, date);
 
                         setColorDefault();
                         Meal newMeal = new Meal(des, finalSize, finalCal, finalProtein, finalCarbs, finalFat, date);

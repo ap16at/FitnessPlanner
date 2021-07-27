@@ -6,59 +6,45 @@ import java.util.Date;
 
 public class WeightLog {
 
-    Date date;
+    String date;
     double weight;
     String units;
 
     public WeightLog(){}
 
-    public WeightLog(Date date, double weight, String units)
+    public WeightLog(String date, double weight, String units)
     {
         this.date = date;
         this.weight = weight;
         this.units = units;
     }
 
-    public Date getDate()
-    {
+    public String getDate() {
         return date;
     }
 
-    public String getMonth() {
-        return (new SimpleDateFormat("MMM").format(date));
-    }
-
-    public int getDay() {
-        return date.getDate();
-    }
-
-    public int getYear() {
-        return date.getYear();
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public double getWeight() {
         return weight;
     }
 
-    public String getUnits() {
-        return units;
-    }
-
-    public void setDate(Date date)
-    {
-        this.date = date;
-    }
-
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public String getUnits() {
+        return units;
     }
 
     public void setUnits(String units) {
         this.units = units;
     }
 
-    public String getLog()
-    {
-        return getMonth() + " " + getDay() + ", " + getYear() + ": " + getWeight() + " " + getUnits();
+    public String getLog(){
+        return date + ": " + weight + units;
     }
+
 }

@@ -14,12 +14,20 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.utils.widget.ImageFilterButton;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.fitnessplanner.models.WeightLog;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
@@ -30,6 +38,9 @@ public class AddWeight extends DialogFragment{
     EditText weight;
     EditText date;
     TextView units;
+    FirebaseDatabase database;
+    DatabaseReference userRef;
+    DatabaseReference weightRef;
 
     DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -56,6 +67,13 @@ public class AddWeight extends DialogFragment{
 
         units.setText(unit);
 
+        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        String userName = mPref.getString("user", "fluffy");
+
+        database = FirebaseDatabase.getInstance();
+        userRef = database.getReference(userName);
+        weightRef = userRef.child("WeightLog");
+
         builder.setView(view)
                 .setTitle("Add Weight")
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -63,6 +81,29 @@ public class AddWeight extends DialogFragment{
                     public void onClick(DialogInterface dialog, int which) {
 
                         //TODO: FIREBASE LOGIC FOR WEIGHT_LOGS
+                        String weightStr = weight.getText().toString();
+                        String dateStr = date.getText().toString();
+                        String units = "lbs";
+
+                        if(weightStr.isEmpty() || dateStr.isEmpty()){
+                            dialog.dismiss();
+                            Toast.makeText(getContext(), "Weight was not added.", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    WeightLog newWeightLog = new WeightLog(dateStr, Double.parseDouble(weightStr), units);
+                                    weightRef.child(dateStr).setValue(newWeightLog);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
 
                     }
                 })
