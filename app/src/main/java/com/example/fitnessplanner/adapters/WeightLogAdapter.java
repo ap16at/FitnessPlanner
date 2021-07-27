@@ -31,14 +31,11 @@ public class WeightLogAdapter extends RecyclerView.Adapter<WeightLogAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         public TextView text;
-        public ImageButton menu;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             text = itemView.findViewById(R.id.log);
-            menu = itemView.findViewById(R.id.imageButton);
-            menu.setOnClickListener(this);
         }
 
         @Override

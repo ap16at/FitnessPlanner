@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:ems="10"
-            android:hint="MM/DD/YYYY"
+            android:hint="MM-DD-YYYY"
             android:inputType="date" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterButton

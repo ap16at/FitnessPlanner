@@ -145,9 +145,10 @@ public class ProfileSetting extends DialogFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 editor.clear().commit();
-                                LoginForm login = new LoginForm();
-                                login.setCancelable(false);
-                                login.show(getActivity().getSupportFragmentManager(),"loginlogout");
+                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                getActivity().finish();
+                                startActivity(intent);
+
                             }
                         })
                         .setCancelable(false)

@@ -1,11 +1,13 @@
 package com.example.fitnessplanner;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,12 +31,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.BaseSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
@@ -49,6 +56,8 @@ public class ProgressFragment extends Fragment {
     WeightLogAdapter weightLogAdapter;
     Spinner graphRange;
     ArrayList<WeightLog> weights;
+    ArrayList<WeightLog> allData;
+    SharedPreferences mPref;
 
     FirebaseDatabase database;
     DatabaseReference userRef;
@@ -82,13 +91,16 @@ public class ProgressFragment extends Fragment {
         weightLog = fragment.findViewById(R.id.recents);
         progressGraph = fragment.findViewById(R.id.progressGraph);
         graphRange = fragment.findViewById(R.id.range);
+        graphRange.setOnItemSelectedListener(rangeListener);
+
+        allData = new ArrayList<WeightLog>();
 
         //graphRange.setOnItemClickListener(rangeListener);
         addButton.setOnClickListener(fabListener);
 
         weightLog.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
         String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
@@ -100,9 +112,9 @@ public class ProgressFragment extends Fragment {
         weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
 
-                    Map<String, Object> map = (Map<String,Object>) ds.getValue();
+                    Map<String, Object> map = (Map<String, Object>) ds.getValue();
                     Object date = map.get("date");
                     Object weight = map.get("weight");
                     Object units = map.get("units");
@@ -111,11 +123,62 @@ public class ProgressFragment extends Fragment {
                     double wValue = Double.parseDouble(String.valueOf(weight));
                     String uValue = String.valueOf(units);
 
-                    weights.add(new WeightLog(dValue, wValue, uValue));
+                    addToArray(new WeightLog(dValue, wValue, uValue));
 
                     System.out.println(dValue + " " + wValue);
 
                 }
+
+                series = new LineGraphSeries<>();
+
+                Collections.sort(weights, new Comparator<WeightLog>() {
+                    public int compare(WeightLog w1, WeightLog w2){
+                        Date date1 = new Date();
+                        Date date2 = new Date();
+                        try {
+                           date1 = new SimpleDateFormat("MM-dd-yyyy").parse(w1.getDate());
+                           date2 = new SimpleDateFormat("MM-dd-yyyy").parse(w2.getDate());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return date1.compareTo(date2);
+                    }
+                });
+
+                if (graphRange.getSelectedItemPosition() == 0){
+                    int count = 7;
+
+                    if(weights.size() < 7)
+                        count = weights.size();
+                    for(int i=weights.size()-count;i<weights.size();i++) {
+                        WeightLog weight = weights.get(i);
+                        try {
+                            Date date = new SimpleDateFormat("MM-dd-yyyy").parse(weight.getDate());
+                            double theWeight = weight.getWeight();
+                            if (mPref.getString("units", "LBS").equalsIgnoreCase("KG"))
+                                theWeight = theWeight / 2.205;
+                            series.appendData(new DataPoint(date, theWeight), true, 7);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                }
+
+                progressGraph.addSeries(series);
+                progressGraph.onDataChanged(true,true);
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+                progressGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter()
+                {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        if(isValueX)
+                        {
+                            return sdf.format(new Date((long)value));
+                        }
+                        else
+                            return super.formatLabel(value, isValueX);
+                    }
+                });
 
                 setRecyclerView(fragment);
 
@@ -127,41 +190,17 @@ public class ProgressFragment extends Fragment {
             }
         });
 
-        //test graph
-        series = new LineGraphSeries<DataPoint>();
-
-        //Test Graph
-//        for(int i=0;i<4;i++)
-//        {
-//            WeightLog weight = weights.get(i);
-//            System.out.println(weight.getDate());
-////            series.appendData(new DataPoint(weight.getDate(),weight.getWeight()), true, 4);
-//        }
-        //Test graph ends
-
-        progressGraph.addSeries(series);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
-        progressGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter()
-        {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if(isValueX)
-                {
-                    return sdf.format(new Date((long)value));
-                }
-                else
-                    return super.formatLabel(value, isValueX);
-            }
-        });
-
-
         return fragment;
     }
 
     private void displayGraph(int range)
     {
 
+    }
+
+    private void addToArray(WeightLog weight)
+    {
+        weights.add(weight);
     }
 
 
@@ -171,21 +210,143 @@ public class ProgressFragment extends Fragment {
         public void onClick(View v) {
             AddWeight addWeight = new AddWeight();
             addWeight.show(getActivity().getSupportFragmentManager(), "add weight");
+
         }
     };
 
-    AdapterView.OnItemClickListener rangeListener = new AdapterView.OnItemClickListener() {
+    AdapterView.OnItemSelectedListener rangeListener = new AdapterView.OnItemSelectedListener() {
+
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            switch(position)
-            {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-            }
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            weights = new ArrayList<>();
+
+            weightRef.orderByChild("WeightLog").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+
+                        Map<String, Object> map = (Map<String, Object>) ds.getValue();
+                        Object date = map.get("date");
+                        Object weight = map.get("weight");
+                        Object units = map.get("units");
+
+                        String dValue = String.valueOf(date);
+                        double wValue = Double.parseDouble(String.valueOf(weight));
+                        String uValue = String.valueOf(units);
+
+                        addToArray(new WeightLog(dValue, wValue, uValue));
+
+                        System.out.println(dValue + " " + wValue);
+
+                    }
+
+                    Collections.sort(weights, new Comparator<WeightLog>() {
+                        public int compare(WeightLog w1, WeightLog w2){
+                            Date date1 = new Date();
+                            Date date2 = new Date();
+                            try {
+                                date1 = new SimpleDateFormat("MM-dd-yyyy").parse(w1.getDate());
+                                date2 = new SimpleDateFormat("MM-dd-yyyy").parse(w2.getDate());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            return date1.compareTo(date2);
+                        }
+                    });
+
+                    series = new LineGraphSeries<DataPoint>();
+
+                    if (position == 0){
+
+                        int count = 7;
+
+                        if(weights.size() < 7)
+                            count = weights.size();
+                        for(int i=weights.size()-count;i<weights.size();i++) {
+                            WeightLog weight = weights.get(i);
+                            try {
+                                Date date = new SimpleDateFormat("MM-dd-yyyy").parse(weight.getDate());
+                                double theWeight = weight.getWeight();
+                                if (mPref.getString("units", "LBS").equalsIgnoreCase("KG"))
+                                    theWeight = theWeight / 2.205;
+                                series.appendData(new DataPoint(date, theWeight), true, 7);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                    else if(position == 1)
+                    {
+
+                        int count = 31;
+
+                        if(weights.size() < 31)
+                            count = weights.size();
+                        for(int i=weights.size()-count;i<weights.size();i++) {
+                            WeightLog weight = weights.get(i);
+                            try {
+                                Date date = new SimpleDateFormat("MM-dd-yyyy").parse(weight.getDate());
+                                double theWeight = weight.getWeight();
+                                if (mPref.getString("units", "LBS").equalsIgnoreCase("KG"))
+                                    theWeight = theWeight / 2.205;
+                                System.out.println("My Date: " + date);
+                                series.appendData(new DataPoint(date, theWeight), true, 100);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        System.out.println("Series: " + series.getHighestValueX());
+                    }
+                    else if(position == 2)
+                    {
+                        int count = 365;
+
+                        if(weights.size() < 365)
+                            count = weights.size();
+                        //for(int i=weights.size()-count;i<weights.size();i++) {
+                        for(int i=0;i<weights.size();i++){
+                            WeightLog weight = weights.get(i);
+                            try {
+                                Date date = new SimpleDateFormat("MM-dd-yyyy").parse(weight.getDate());
+                                double theWeight = weight.getWeight();
+                                if (mPref.getString("units", "LBS").equalsIgnoreCase("KG"))
+                                    theWeight = theWeight / 2.205;
+                                series.appendData(new DataPoint(date, theWeight), true, 366);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    progressGraph.addSeries(series);
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+                    progressGraph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter()
+                    {
+                        @Override
+                        public String formatLabel(double value, boolean isValueX) {
+                            if(isValueX)
+                            {
+                                return sdf.format(new Date((long)value));
+                            }
+                            else
+                                return super.formatLabel(value, isValueX);
+                        }
+                    });
+
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
         }
     };
 
@@ -193,7 +354,8 @@ public class ProgressFragment extends Fragment {
 
         ArrayList<WeightLog> weightsRev = new ArrayList<>();
 
-        for(int i = weights.size() - 1; i >= 0; i--){
+
+        for(int i = weights.size() - 1; i >= weights.size()-5; i--){
             weightsRev.add(weights.get(i));
         }
 
