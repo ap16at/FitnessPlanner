@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.fitnessplanner.adapters.MealsAdapter;
 import com.example.fitnessplanner.adapters.WorkoutAdapter;
@@ -49,6 +50,11 @@ public class HomeFragment extends Fragment {
     private RecyclerView workouts_display;
     private ArrayList<WorkoutItem> workoutItems;
 
+    //test
+    SharedPreferences mPref;
+    SharedPreferences.Editor editor;
+
+
     FirebaseDatabase database;
     DatabaseReference workoutRef;
     DatabaseReference userRef;
@@ -70,6 +76,9 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+        editor = mPref.edit();
+
         water_progress_bar = view.findViewById(R.id.water_progress_bar);
         calorie_progress_bar = view.findViewById(R.id.calorie_progress_bar);
 
@@ -78,6 +87,7 @@ public class HomeFragment extends Fragment {
 
         workouts_display = view.findViewById(R.id.workouts_display);
 
+
         waterBarUpdate();
 
         button_decrease.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +95,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 if(water_progress >= 10){
                     water_progress -= 10;
+                    editor.putInt("waterProg", water_progress);
+                    editor.commit();
                     waterBarUpdate();
                 }
             }
@@ -96,6 +108,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 if(water_progress <= 90){
                     water_progress += 10;
+                    editor.putInt("waterProg", water_progress);
+                    editor.commit();
                     waterBarUpdate();
                 }
 
@@ -109,7 +123,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
+
         String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
@@ -166,7 +180,8 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                water_progress_bar.setProgress(water_progress);
+                water_progress_bar.setProgress(mPref.getInt("waterProg",0));
+                //Toast.makeText(getContext(),"Run!", Toast.LENGTH_LONG).show();
             }
         }, 50);
     }
