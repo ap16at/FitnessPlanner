@@ -44,7 +44,7 @@ public class WeightLog {
     }
 
     public String getLog(){
-        return date + ": " + weight + units;
+        return date + ": " + weight + " " + units;
     }
 
 }
