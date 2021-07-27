@@ -2,8 +2,11 @@ package com.example.fitnessplanner;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -17,6 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.storage.StorageReference;
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import static android.app.Activity.RESULT_OK;
+
 public class ProfileSetting extends DialogFragment {
 
     Button fullname;
@@ -24,7 +32,18 @@ public class ProfileSetting extends DialogFragment {
     Button profileImg;
     Button logout;
     SharedPreferences pref;
+    Uri imageUri;
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null)
+        {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            imageUri = result.getUri();
+        }
+    }
 
 
     @NonNull
@@ -100,6 +119,7 @@ public class ProfileSetting extends DialogFragment {
             @Override
             public void onClick(View v) {
                 //image change to gallery
+                CropImage.activity().setAspectRatio(1,1).start(getActivity());
                 Toast.makeText(getContext(),"Not Yet Implemented", Toast.LENGTH_LONG).show();
             }
         });
