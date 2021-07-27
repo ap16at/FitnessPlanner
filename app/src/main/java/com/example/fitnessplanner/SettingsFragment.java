@@ -19,14 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SettingsFragment extends Fragment {
-
 
     TextView nameField;
     ListView settingList;
@@ -112,6 +105,14 @@ public class SettingsFragment extends Fragment {
                     break;
                 case 4:     //About Section
                     //information about the app and developer
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("About")
+                            .setMessage("Fitness Planner is a nutrition and workout planning application catered towards people who are trying to stay fit or trying to get fit. " +
+                                    "It is designed to help users reach their fitness goals by providing structure in their routine. " +
+                                    "Fitness Planner will keep users on track to reach their greatest potential.")
+                            .setNegativeButton("Return", null)
+                            .setCancelable(false)
+                            .create().show();
                     break;
             }
         }
