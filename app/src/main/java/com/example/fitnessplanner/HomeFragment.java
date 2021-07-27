@@ -113,13 +113,6 @@ public class HomeFragment extends Fragment {
                     waterBarUpdate();
                 }
 
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-                LocalDateTime now = LocalDateTime.now();
-                System.out.println(dtf.format(now));
-                String date = dtf.format(now);
-                String TAG = "DATE";
-                Log.i(TAG, date);
-
             }
         });
 
