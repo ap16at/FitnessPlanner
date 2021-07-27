@@ -14,15 +14,6 @@ public class Meal {
 
     public Meal() {}
 
-//    public Meal(String description, int servingSize, int totalCalories, int protein, int carbs, int fat) {
-//        Description = description;
-//        this.servingSize = servingSize;
-//        this.totalCalories = totalCalories;
-//        this.protein = protein;
-//        this.carbs = carbs;
-//        this.fat = fat;
-//    }
-
     public Meal(String description, int servingSize, int totalCalories, int protein, int carbs, int fat, String date) {
         Description = description;
         this.servingSize = servingSize;
