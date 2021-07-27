@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.fitnessplanner.adapters.MealsAdapter;
 import com.example.fitnessplanner.adapters.WorkoutAdapter;
@@ -39,10 +41,24 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 public class NutritionFragment extends Fragment {
 
     HorizontalCalendar horizontalCalendar;
-    private RecyclerView meals_display;
-    private ArrayList<Meal> mealItems;
+
+    ProgressBar protein_bar;
+    int protein_progress;
+    TextView protein_bar_text;
+    ProgressBar carb_bar;
+    int carb_progress;
+    TextView carb_bar_text;
+    ProgressBar fat_bar;
+    int fat_progress;
+    TextView fat_bar_text;
+    ProgressBar total_cal_bar;
+    int total_progress;
+    TextView total_bar_text;
 
     private Button add_a_meal;
+
+    private RecyclerView meals_display;
+    private ArrayList<Meal> mealItems;
 
     FirebaseDatabase database;
     DatabaseReference userRef;
@@ -76,10 +92,20 @@ public class NutritionFragment extends Fragment {
             public void onDateSelected(Calendar date, int position) {
 
 //                System.out.println("hello world");
-                setWorkoutList();
+//                setWorkoutList();
 
             }
         });
+
+        protein_bar = v.findViewById(R.id.protein_progress_bar);
+        carb_bar = v.findViewById(R.id.carb_progress_bar);
+        fat_bar = v.findViewById(R.id.fat_progress_bar);
+        total_cal_bar = v.findViewById(R.id.full_calorie_progress_bar);
+
+        protein_bar_text = v.findViewById(R.id.protein_progress_text);
+        carb_bar_text = v.findViewById(R.id.carb_progress_text);
+        fat_bar_text = v.findViewById(R.id.fat_progress_text);
+        total_bar_text = v.findViewById(R.id.full_calorie_progress_text);
 
         add_a_meal = v.findViewById(R.id.button_add_meal);
 
@@ -98,6 +124,7 @@ public class NutritionFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference(userName);
         mealRef = userRef.child("Meals");
+        update_progress_bars();
 
         mealItems = new ArrayList<>();
 
@@ -155,8 +182,84 @@ public class NutritionFragment extends Fragment {
         meals_display.setItemAnimator(new DefaultItemAnimator());
     }
 
-    private void  setWorkoutList(){
+    private void update_progress_bars(){
 
+        //TODO: Allow user to input calorie goals to replace these temporary ones:
+
+        int totCalTemp = 2200;
+        int proTemp = 220;
+        int carbTemp = 193;
+        int fatTemp = 61;
+
+        mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                int total_sum = 0;
+                int protein_sum = 0;
+                int carb_sum = 0;
+                int fat_sum = 0;
+                for(DataSnapshot ds : snapshot.getChildren()){
+
+                    Map<String, Object>map = (Map<String,Object>) ds.getValue();
+
+                    Object date = map.get("date");
+                    String dateStr = String.valueOf(date);
+
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+                    LocalDateTime now = LocalDateTime.now();
+                    String dateCurr = dtf.format(now);
+
+                    if(dateStr.equals(dateCurr)){
+
+                        Object calories = map.get("totalCalories");
+                        Object protein = map.get("protein");
+                        Object carbs = map.get("carbs");
+                        Object fat = map.get("fat");
+                        int tValue = Integer.parseInt(String.valueOf(calories));
+                        int pValue = Integer.parseInt(String.valueOf(protein));
+                        int cValue = Integer.parseInt(String.valueOf(carbs));
+                        int fValue = Integer.parseInt(String.valueOf(fat));
+                        total_sum += tValue;
+                        protein_sum += pValue;
+                        carb_sum += cValue;
+                        fat_sum += fValue;
+
+                    }
+
+                }
+                total_progress = (total_sum*100)/totCalTemp;
+                protein_progress = (protein_sum*100)/proTemp;
+                carb_progress = (carb_sum*100)/carbTemp;
+                fat_progress = (fat_sum*100)/fatTemp;
+
+                if(total_progress > 100)
+                    total_progress = 100;
+                if(protein_progress > 100)
+                    protein_progress = 100;
+                if(carb_progress > 100)
+                    carb_progress = 100;
+                if(fat_progress > 100)
+                    fat_progress = 100;
+
+                total_bar_text.setText(String.valueOf(total_sum));
+                protein_bar_text.setText(String.valueOf(protein_sum));
+                carb_bar_text.setText(String.valueOf(carb_sum));
+                fat_bar_text.setText(String.valueOf(fat_sum));
+
+                protein_bar.setProgress(protein_progress);
+                carb_bar.setProgress(carb_progress);
+                fat_bar.setProgress(fat_progress);
+                total_cal_bar.setProgress(total_progress);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

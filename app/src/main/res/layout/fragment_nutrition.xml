@@ -16,26 +16,179 @@
         android:background="@color/purple_500"
         app:textColorSelected="#FFFF" />
 
-    <Button
-        android:id="@+id/button_add_meal"
-        android:layout_width="164dp"
-        android:layout_height="45dp"
-        android:layout_below="@id/calendarView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="@string/add_a_meal"/>
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendarView">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/meals_display"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/button_add_meal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_alignParentLeft="true"
-        android:padding="5dp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/progress_bar_layout"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="20dp" >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/protein_progress_bar"
+                        style="?android:progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressDrawable="@drawable/calorie_protein_circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/protein_progress_text"
+                        android:text=""
+                        app:layout_constraintTop_toTopOf="@id/protein_progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/protein_progress_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/protein_progress_bar"
+                        app:layout_constraintRight_toRightOf="@id/protein_progress_bar"
+                        android:textColor="@color/black" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/carb_progress_bar"
+                        style="?android:progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressDrawable="@drawable/calorie_carb_circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/carb_progress_text"
+                        android:text=""
+                        app:layout_constraintTop_toTopOf="@id/carb_progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/carb_progress_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/carb_progress_bar"
+                        app:layout_constraintRight_toRightOf="@id/carb_progress_bar"
+                        android:textColor="@color/black" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/fat_progress_bar"
+                        style="?android:progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressDrawable="@drawable/calorie_fat_circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/fat_progress_text"
+                        android:text=""
+                        app:layout_constraintTop_toTopOf="@id/fat_progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/fat_progress_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/fat_progress_bar"
+                        app:layout_constraintRight_toRightOf="@id/fat_progress_bar"
+                        android:textColor="@color/black" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/full_calorie_progress_bar"
+                        style="?android:progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressDrawable="@drawable/calorie_total_circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"  />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/full_calorie_progress_text"
+                        android:text=""
+                        app:layout_constraintTop_toTopOf="@id/full_calorie_progress_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/full_calorie_progress_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/full_calorie_progress_bar"
+                        app:layout_constraintRight_toRightOf="@id/full_calorie_progress_bar"
+                        android:textColor="@color/black" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_add_meal"
+                android:layout_width="164dp"
+                android:layout_height="45dp"
+                android:layout_below="@id/progress_bar_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/add_a_meal"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/meals_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/button_add_meal"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_alignParentLeft="true"
+                android:padding="5dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_below="@id/meals_display"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
 
 </RelativeLayout>
