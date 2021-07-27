@@ -95,7 +95,7 @@ public class ProfileSetting extends DialogFragment {
         profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //image change to gallery
+                //avatar change
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Change Avatar")
                         .setPositiveButton("Set", new DialogInterface.OnClickListener() {
@@ -104,6 +104,7 @@ public class ProfileSetting extends DialogFragment {
                                 int imageResource = getResources().getIdentifier("@drawable/avatar", null, getActivity().getPackageName());
                                 switch(pref.getInt("avatar",0)) {
                                     case 0:
+                                        imageResource = getResources().getIdentifier("@drawable/avatar", null, getActivity().getPackageName());
                                         break;
                                     case 1:
                                         imageResource = getResources().getIdentifier("@drawable/male", null, getActivity().getPackageName());

@@ -28,8 +28,6 @@ public class NotificationDialog extends DialogFragment {
     Button breakfast;
     Button lunch;
     Button dinner;
-    Button weight;
-
 
     @NonNull
     @Override
@@ -53,7 +51,6 @@ public class NotificationDialog extends DialogFragment {
         breakfast = view.findViewById(R.id.breakfast);
         lunch= view.findViewById(R.id.lunch);
         dinner = view.findViewById(R.id.dinner);
-        weight = view.findViewById(R.id.weight);
 
         if(remind) {
             notification.setChecked(true);
@@ -145,25 +142,6 @@ public class NotificationDialog extends DialogFragment {
             }
         });
 
-        weight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        int mHour = hourOfDay;
-                        int mMinute = minute;
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(0,0,0,mHour, mMinute);
-                        editor.putInt("weighthour", mHour);
-                        editor.putInt("weightminute", mMinute);
-                        editor.commit();
-                    }
-                },12,0,false);
-                timePickerDialog.updateTime(mHour,mMinute);
-                timePickerDialog.show();
-            }
-        });
 
 
 
