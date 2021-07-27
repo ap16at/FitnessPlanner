@@ -7,7 +7,7 @@
     <item
         android:id="@+id/nutritionFragment"
         android:title= "@string/workouts"
-        android:icon="@drawable/workout_icon" />
+        android:icon="@drawable/nutrition_icon" />
     <item
         android:id="@+id/workoutFragment"
         android:title="@string/progress"

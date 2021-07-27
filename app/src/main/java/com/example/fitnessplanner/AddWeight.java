@@ -33,7 +33,7 @@ public class AddWeight extends DialogFragment{
     DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            date.setText(month + "/" + dayOfMonth + "/" + year);
+            date.setText(month + "-" + dayOfMonth + "-" + year);
         }
     };
 

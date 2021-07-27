@@ -21,7 +21,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.fitnessplanner.adapters.MealsAdapter;
+import com.example.fitnessplanner.adapters.WorkoutAdapter;
 import com.example.fitnessplanner.models.Meal;
+import com.example.fitnessplanner.models.WorkoutItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,17 +42,15 @@ public class HomeFragment extends Fragment {
     //TODO: Progress bar stuff
     int water_progress = 0;
     int calorie_progress = 0;
-    int workout_progress = 0;
     private ProgressBar water_progress_bar;
     private ProgressBar calorie_progress_bar;
-    private ProgressBar workout_progress_bar;
     private Button button_increase;
     private Button button_decrease;
-    private Button add_a_meal;
-    private RecyclerView meals_display;
-    private ArrayList<Meal> mealItems;
+    private RecyclerView workouts_display;
+    private ArrayList<WorkoutItem> workoutItems;
 
     FirebaseDatabase database;
+    DatabaseReference workoutRef;
     DatabaseReference userRef;
     DatabaseReference mealRef;
 
@@ -79,13 +79,11 @@ public class HomeFragment extends Fragment {
 
         water_progress_bar = view.findViewById(R.id.water_progress_bar);
         calorie_progress_bar = view.findViewById(R.id.calorie_progress_bar);
-        workout_progress_bar = view.findViewById(R.id.workout_progress_bar);
 
         button_decrease = view.findViewById(R.id.water_decrease_button);
         button_increase = view.findViewById(R.id.water_increase_button);
 
-        add_a_meal = view.findViewById(R.id.button_add_meal);
-        meals_display = view.findViewById(R.id.meals_display);
+        workouts_display = view.findViewById(R.id.workouts_display);
 
         water_bar_update();
 
@@ -118,58 +116,34 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        add_a_meal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), AddMealActivity.class));
-            }
-        });
-
         SharedPreferences mPref = getContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
         String userName = mPref.getString("user", "fluffy");
 
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference(userName);
         mealRef = userRef.child("Meals");
-        calorie_bar_update();
+        workoutRef = database.getReference("Workouts");
+        workoutItems = new ArrayList<>();
 
-        mealItems = new ArrayList<>();
-
-        mealRef.orderByChild("Meals").addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
+        workoutRef.orderByChild("Workouts").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 for(DataSnapshot ds : snapshot.getChildren()){
+                    Map<String, Object> map = (Map<String, Object>) ds.getValue();
+                    Object type = map.get("WorkoutType");
+                    Object info = map.get("WorkoutInfo");
+                    Object id = map.get("YoutubeID");
 
-                    Map<String, Object>map = (Map<String,Object>) ds.getValue();
-                    Object descrip = map.get("description");
-                    Object size = map.get("servingSize");
-                    Object calories = map.get("totalCalories");
-                    Object protein = map.get("protein");
-                    Object carbs = map.get("carbs");
-                    Object fat = map.get("fat");
-                    Object date = map.get("date");
+                    String tValue = String.valueOf(type);
+                    String iValue = String.valueOf(info);
+                    String idString = String.valueOf(id);
+                    String idValue = "<iframe width=\"100%\" height=\"100%\" src=\"" + String.format("https://www.youtube.com/embed/%s", idString + "\" frameborder=\"0\" allowfullscreen><iframe>");
 
-                    String dValue = String.valueOf(descrip);
-                    int sValue = Integer.parseInt(String.valueOf(size));
-                    int tValue = Integer.parseInt(String.valueOf(calories));
-                    int pValue = Integer.parseInt(String.valueOf(protein));
-                    int cValue = Integer.parseInt(String.valueOf(carbs));
-                    int fValue = Integer.parseInt(String.valueOf(fat));
-                    String ddValue = String.valueOf(date);
-
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-                    LocalDateTime now = LocalDateTime.now();
-                    String dateCurr = dtf.format(now);
-
-                    if(dateCurr.equals(ddValue)){
-                        mealItems.add(new Meal(dValue, sValue, tValue, pValue, cValue, fValue, ddValue));
-                    }
-
+                    workoutItems.add(new WorkoutItem(tValue, iValue, idValue));
                 }
 
                 setRecyclerView(view);
+
             }
 
             @Override
@@ -178,17 +152,19 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        calorie_bar_update();
+
         return view;
 
     }
 
     private void setRecyclerView(View v){
 
-        meals_display = v.findViewById(R.id.meals_display);
-        meals_display.setLayoutManager(new LinearLayoutManager(getActivity()));
-        MealsAdapter mealsAdapter = new MealsAdapter(getActivity(), mealItems);
-        meals_display.setAdapter(mealsAdapter);
-        meals_display.setItemAnimator(new DefaultItemAnimator());
+        workouts_display = v.findViewById(R.id.workouts_display);
+        workouts_display.setLayoutManager(new LinearLayoutManager(getActivity()));
+        WorkoutAdapter workoutAdapter = new WorkoutAdapter(getActivity(), workoutItems);
+        workouts_display.setAdapter(workoutAdapter);
+        workouts_display.setItemAnimator(new DefaultItemAnimator());
 
     }
 
